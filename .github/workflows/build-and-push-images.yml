@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.repository }}:${{ matrix.mariadb }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mariadb-backup-s3:${{ matrix.mariadb }}
           build-args: |
             ALPINE_VERSION=${{ matrix.alpine }}
           platforms: |
