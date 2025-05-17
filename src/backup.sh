@@ -5,27 +5,28 @@ set -o pipefail
 
 source ./env.sh
 
-echo "Creating backup of $POSTGRES_DATABASE database..."
-pg_dump --format=custom \
-        -h $POSTGRES_HOST \
-        -p $POSTGRES_PORT \
-        -U $POSTGRES_USER \
-        -d $POSTGRES_DATABASE \
-        $PGDUMP_EXTRA_OPTS \
-        > db.dump
+echo "Creating backup of $MARIADB_DATABASE database..."
+mysqldump \
+        -h $MARIADB_HOST \
+        -P $MARIADB_PORT \
+        -u $MARIADB_USER \
+        --password=$MARIADB_PASSWORD \
+        $MYSQLDUMP_EXTRA_OPTS \
+        $MARIADB_DATABASE \
+        > db.sql
 
 timestamp=$(date +"%Y-%m-%dT%H:%M:%S")
-s3_uri_base="s3://${S3_BUCKET}/${S3_PREFIX}/${POSTGRES_DATABASE}_${timestamp}.dump"
+s3_uri_base="s3://${S3_BUCKET}/${S3_PREFIX}/${MARIADB_DATABASE}_${timestamp}.sql"
 
 if [ -n "$PASSPHRASE" ]; then
   echo "Encrypting backup..."
-  rm -f db.dump.gpg
-  gpg --symmetric --batch --passphrase "$PASSPHRASE" db.dump
-  rm db.dump
-  local_file="db.dump.gpg"
+  rm -f db.sql.gpg
+  gpg --symmetric --batch --passphrase "$PASSPHRASE" db.sql
+  rm db.sql
+  local_file="db.sql.gpg"
   s3_uri="${s3_uri_base}.gpg"
 else
-  local_file="db.dump"
+  local_file="db.sql"
   s3_uri="$s3_uri_base"
 fi
 

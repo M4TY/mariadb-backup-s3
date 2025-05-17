@@ -5,8 +5,8 @@ set -o pipefail
 
 apk update
 
-# install pg_dump
-apk add postgresql-client
+# install mariadb client
+apk add mariadb-client
 
 # install gpg
 apk add gnupg

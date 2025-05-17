@@ -3,29 +3,29 @@ if [ -z "$S3_BUCKET" ]; then
   exit 1
 fi
 
-if [ -z "$POSTGRES_DATABASE" ]; then
-  echo "You need to set the POSTGRES_DATABASE environment variable."
+if [ -z "$MARIADB_DATABASE" ]; then
+  echo "You need to set the MARIADB_DATABASE environment variable."
   exit 1
 fi
 
-if [ -z "$POSTGRES_HOST" ]; then
+if [ -z "$MARIADB_HOST" ]; then
   # https://docs.docker.com/network/links/#environment-variables
-  if [ -n "$POSTGRES_PORT_5432_TCP_ADDR" ]; then
-    POSTGRES_HOST=$POSTGRES_PORT_5432_TCP_ADDR
-    POSTGRES_PORT=$POSTGRES_PORT_5432_TCP_PORT
+  if [ -n "$MARIADB_PORT_3306_TCP_ADDR" ]; then
+    MARIADB_HOST=$MARIADB_PORT_3306_TCP_ADDR
+    MARIADB_PORT=$MARIADB_PORT_3306_TCP_PORT
   else
-    echo "You need to set the POSTGRES_HOST environment variable."
+    echo "You need to set the MARIADB_HOST environment variable."
     exit 1
   fi
 fi
 
-if [ -z "$POSTGRES_USER" ]; then
-  echo "You need to set the POSTGRES_USER environment variable."
+if [ -z "$MARIADB_USER" ]; then
+  echo "You need to set the MARIADB_USER environment variable."
   exit 1
 fi
 
-if [ -z "$POSTGRES_PASSWORD" ]; then
-  echo "You need to set the POSTGRES_PASSWORD environment variable."
+if [ -z "$MARIADB_PASSWORD" ]; then
+  echo "You need to set the MARIADB_PASSWORD environment variable."
   exit 1
 fi
 
@@ -43,4 +43,4 @@ if [ -n "$S3_SECRET_ACCESS_KEY" ]; then
   export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
 fi
 export AWS_DEFAULT_REGION=$S3_REGION
-export PGPASSWORD=$POSTGRES_PASSWORD
+export MYSQL_PWD=$MARIADB_PASSWORD
